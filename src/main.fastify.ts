@@ -22,7 +22,7 @@ configure({
 
 const logger = getLogger('main.ts');
 
-const app = fastify();
+const app = fastify({ logger: true });
 
 app.get('/users/:username', makeFastifyCallback(userController, 'getUser'));
 

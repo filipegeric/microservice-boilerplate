@@ -1,25 +1,24 @@
-import { Request, Response } from 'express';
+import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { IHttpRequest } from '../types/http';
 
-export function makeExpressCallback<T extends any>(
+export function makeFastifyCallback<T extends any>(
   controller: T,
   action: keyof T
 ) {
-  return async (req: Request, res: Response) => {
+  return async (req: FastifyRequest, res: FastifyReply<any>) => {
     try {
       const request: IHttpRequest = {
-        ip: req.ip,
         body: req.body,
+        ip: req.ip,
         params: req.params,
         query: req.query
       };
       const response = await controller[action](request);
       if (response.headers) {
-        res.set(response.headers);
+        res.headers(response.headers);
       }
-      res.type('json');
-      res.status(response.status).send(response.data);
+      return response.data;
     } catch (error) {
       res
         .status(error.status || 500)

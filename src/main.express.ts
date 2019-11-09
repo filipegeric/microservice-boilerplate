@@ -1,10 +1,10 @@
 import { config as dotenvConfig } from 'dotenv';
-import fastify from 'fastify';
+import express from 'express';
 import { configure, getLogger } from 'log4js';
 
 import { config } from './config';
 import { userController } from './controllers';
-import { makeFastifyCallback } from './util/fastify.util';
+import { makeExpressCallback } from './util/express.util';
 
 dotenvConfig();
 
@@ -22,9 +22,9 @@ configure({
 
 const logger = getLogger('main.ts');
 
-const app = fastify();
+const app = express();
 
-app.get('/users/:username', makeFastifyCallback(userController, 'getUser'));
+app.get('/users/:username', makeExpressCallback(userController, 'getUser'));
 
 app.listen(config.PORT, () => {
   logger.info(`Server working on port ${config.PORT}...`);
