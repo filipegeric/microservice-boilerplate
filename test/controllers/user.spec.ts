@@ -6,7 +6,7 @@ import { stub } from 'sinon';
 import { UserController } from '../../src/controllers/user.controller';
 import { UserDb } from '../../src/db/user.db';
 import { User } from '../../src/entity/user.entity';
-import { AppError } from '../../src/error/app.error';
+import { HttpError } from '../../src/error/http.error';
 import { UserService } from '../../src/services/user.service';
 
 describe('User Controller', () => {
@@ -59,7 +59,7 @@ describe('User Controller', () => {
 
     it('fails when there is no user with provided username', done => {
       const username = internet.userName();
-      const stubFn = stub(UserDb.prototype, 'getUser').throws(AppError);
+      const stubFn = stub(UserDb.prototype, 'getUser').throws(HttpError);
 
       controller
         .getUser({

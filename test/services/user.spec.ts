@@ -5,7 +5,7 @@ import { stub } from 'sinon';
 
 import { UserDb } from '../../src/db/user.db';
 import { User } from '../../src/entity/user.entity';
-import { AppError } from '../../src/error/app.error';
+import { HttpError } from '../../src/error/http.error';
 import { UserService } from '../../src/services/user.service';
 
 describe('UserService', () => {
@@ -48,7 +48,7 @@ describe('UserService', () => {
 
     it('fails if there is no user', done => {
       const username = internet.userName();
-      const stubFn = stub(UserDb.prototype, 'getUser').throws(AppError);
+      const stubFn = stub(UserDb.prototype, 'getUser').throws(HttpError);
       service
         .getUser(username)
         .then(done)
