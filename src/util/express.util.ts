@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { IHttpRequest } from '../types/http';
+import { IHttpRequest, IHttpResponse } from '../types/http';
 
 export function makeExpressCallback<T extends any>(
   controller: T,
@@ -14,7 +14,7 @@ export function makeExpressCallback<T extends any>(
         params: req.params,
         query: req.query
       };
-      const response = await controller[action](request);
+      const response: IHttpResponse = await controller[action](request);
       if (response.headers) {
         res.set(response.headers);
       }

@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { IHttpRequest } from '../types/http';
+import { IHttpRequest, IHttpResponse } from '../types/http';
 
 export function makeFastifyCallback<T extends any>(
   controller: T,
@@ -14,10 +14,11 @@ export function makeFastifyCallback<T extends any>(
         params: req.params,
         query: req.query
       };
-      const response = await controller[action](request);
+      const response: IHttpResponse = await controller[action](request);
       if (response.headers) {
         res.headers(response.headers);
       }
+      res.status(response.status);
       return response.data;
     } catch (error) {
       res
