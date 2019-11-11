@@ -1,9 +1,9 @@
 import { User } from '../entity/user.entity';
 import { HttpError } from '../error/http.error';
-import { Database } from './database';
+import { IDatabase } from '../types/db';
 
 export class UserDb {
-  constructor(private db: Database) {}
+  constructor(private db: IDatabase) {}
 
   public async getUser(username: string) {
     const results = await this.db.executeQuery(

@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import { internet, name } from 'faker';
-import { Pool } from 'mysql';
 import { stub } from 'sinon';
 
 import { UserDb } from '../../src/db/user.db';
@@ -13,11 +12,7 @@ describe('UserService', () => {
 
   before(() => {
     const db = {
-      dbClient: {} as Pool,
       async executeQuery() {
-        //
-      },
-      makeExecuteConnectionQuery: () => async () => {
         //
       },
       transaction() {

@@ -1,9 +1,9 @@
 import { createPool, Pool, PoolConfig, PoolConnection } from 'mysql';
 
-import { ITransactionContext } from '../types/db';
+import { IDatabase, ITransactionContext } from '../types/db';
 
-export class Database {
-  public dbClient: Pool;
+export class Database implements IDatabase {
+  private dbClient: Pool;
 
   constructor(config: PoolConfig) {
     this.dbClient = createPool(config);
@@ -42,7 +42,7 @@ export class Database {
     });
   }
 
-  public makeExecuteConnectionQuery(
+  private makeExecuteConnectionQuery(
     connection: PoolConnection
   ): (query: string, params: Array<string | number>) => Promise<any> {
     return (query, params) => {

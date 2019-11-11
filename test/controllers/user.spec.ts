@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import { internet, name } from 'faker';
-import { Pool } from 'mysql';
 import { stub } from 'sinon';
 
 import { UserController } from '../../src/controllers/user.controller';
@@ -14,11 +13,7 @@ describe('User Controller', () => {
 
   before(() => {
     const db = {
-      dbClient: {} as Pool,
       async executeQuery() {
-        //
-      },
-      makeExecuteConnectionQuery: () => async () => {
         //
       },
       transaction() {
