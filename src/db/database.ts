@@ -1,4 +1,10 @@
-import { createPool, Pool, PoolConfig, PoolConnection } from 'mysql';
+import {
+  createPool,
+  Pool,
+  PoolConfig,
+  PoolConnection,
+  QueryOptions
+} from 'mysql';
 
 import { IDatabase, ITransactionContext } from '../types/db';
 
@@ -33,9 +39,9 @@ export class Database implements IDatabase {
           throw error;
         }
         callback({
-          commit: connection.commit,
+          commit: this.makeCommitPromise(connection),
           query: this.makeExecuteConnectionQuery(connection),
-          rollback: connection.rollback,
+          rollback: this.makeRollbackPromise(connection),
           release: connection.release
         });
       });
@@ -44,14 +50,40 @@ export class Database implements IDatabase {
 
   private makeExecuteConnectionQuery(
     connection: PoolConnection
-  ): (query: string, params: Array<string | number>) => Promise<any> {
-    return (query, params) => {
+  ): (query: string, params?: Array<string | number>) => Promise<any> {
+    return (query, params = []) => {
       return new Promise((resolve, reject) => {
         connection.query(query, params, (err, results) => {
           if (err) {
             return reject(err);
           }
           return resolve(results);
+        });
+      });
+    };
+  }
+
+  private makeCommitPromise(connection: PoolConnection) {
+    return (options?: QueryOptions): Promise<void> => {
+      return new Promise((resolve, reject) => {
+        connection.commit(options, err => {
+          if (err) {
+            return reject(err);
+          }
+          return resolve();
+        });
+      });
+    };
+  }
+
+  private makeRollbackPromise(connection: PoolConnection) {
+    return (options?: QueryOptions): Promise<void> => {
+      return new Promise((resolve, reject) => {
+        connection.rollback(options, err => {
+          if (err) {
+            return reject(err);
+          }
+          return resolve();
         });
       });
     };
