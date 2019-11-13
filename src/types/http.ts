@@ -8,5 +8,6 @@ export interface IHttpRequest {
 export interface IHttpResponse<T = any> {
   status: number;
   headers?: any;
-  data: T;
+  data: T | null;
+  error?: any;
 }

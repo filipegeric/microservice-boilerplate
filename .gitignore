@@ -93,3 +93,5 @@ typings/
 
 # TS build
 /dist
+
+data
