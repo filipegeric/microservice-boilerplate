@@ -1,26 +1,17 @@
 import { expect } from 'chai';
 import { internet, name } from 'faker';
 import { stub } from 'sinon';
+import { Repository } from 'typeorm';
 
-import { UserDb } from '../../src/db/user.db';
 import { User } from '../../src/entity/user.entity';
-import { HttpError } from '../../src/error/http.error';
 import { UserService } from '../../src/services/user.service';
 
 describe('UserService', () => {
   let service: UserService;
+  const userRepository: Repository<User> = {} as Repository<User>;
 
   before(() => {
-    const db = {
-      async executeQuery() {
-        //
-      },
-      transaction() {
-        //
-      }
-    };
-    const userDb = new UserDb(db);
-    service = new UserService(userDb);
+    service = new UserService(userRepository);
   });
   describe('getUser', () => {
     it('returns a user', async () => {
@@ -30,26 +21,26 @@ describe('UserService', () => {
         internet.password(),
         name.firstName()
       );
-      const stubFn = stub(UserDb.prototype, 'getUser').returns(
-        Promise.resolve(mockUser)
-      );
+
+      userRepository.findOne = stub().callsFake(() => {
+        return mockUser;
+      });
+
       const user = await service.getUser(username);
 
       expect(user).to.be.instanceOf(User);
       expect(user).to.be.eql(mockUser);
-
-      stubFn.restore();
     });
 
     it('fails if there is no user', done => {
       const username = internet.userName();
-      const stubFn = stub(UserDb.prototype, 'getUser').throws(HttpError);
+
+      userRepository.findOne = stub().throws();
+
       service
         .getUser(username)
         .then(done)
         .catch(() => done());
-
-      stubFn.restore();
     });
   });
 });
