@@ -1,9 +1,11 @@
+import 'reflect-metadata';
+
 import { config as dotenvConfig } from 'dotenv';
 import fastify from 'fastify';
 import { configure, getLogger } from 'log4js';
+import { createConnection } from 'typeorm';
 
 import { config } from './config';
-import { userController } from './controllers';
 import { makeFastifyCallback } from './util/fastify.util';
 
 dotenvConfig();
@@ -22,10 +24,19 @@ configure({
 
 const logger = getLogger('main.ts');
 
-const app = fastify();
+createConnection()
+  .then(() => {
+    const app = fastify();
 
-app.get('/users/:username', makeFastifyCallback(userController, 'getUser'));
+    const { userController } = require('./controllers');
 
-app.listen(config.PORT, () => {
-  logger.info(`Server working on port ${config.PORT}...`);
-});
+    app.get('/users/:username', makeFastifyCallback(userController, 'getUser'));
+
+    app.listen(config.PORT, () => {
+      logger.info(`Server working on port ${config.PORT}...`);
+    });
+  })
+  .catch(err => {
+    logger.error(err);
+    process.exit(-1);
+  });

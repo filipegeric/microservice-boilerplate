@@ -1,9 +1,11 @@
-import { UserDb } from '../db/user.db';
+import { Repository } from 'typeorm';
+
+import { User } from '../entity/user.entity';
 
 export class UserService {
-  constructor(private userDb: UserDb) {}
+  constructor(private userRepository: Repository<User>) {}
 
   public async getUser(username: string) {
-    return this.userDb.getUser(username);
+    return this.userRepository.findOne({ username });
   }
 }

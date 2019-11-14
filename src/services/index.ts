@@ -1,6 +1,6 @@
-import { userDb } from '../db';
+import { userRepository } from '../db';
 import { UserService } from './user.service';
 
-const userService = new UserService(userDb);
+const userService = new UserService(userRepository);
 
 export { userService };

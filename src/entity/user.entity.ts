@@ -1,29 +1,13 @@
+import { Column, Entity } from 'typeorm';
+
+@Entity()
 export class User {
-  constructor(
-    private username: string,
-    private password: string,
-    private fullName: string
-  ) {
-    if (!username) {
-      throw new Error('Username is required');
-    }
-    if (!password) {
-      throw new Error('Password is required');
-    }
-    if (!fullName) {
-      throw new Error('Full name is required');
-    }
-  }
+  @Column({ unique: true, primary: true })
+  public username: string;
 
-  public getUsername() {
-    return this.username;
-  }
+  @Column({ select: false })
+  public password: string;
 
-  public getPassword() {
-    return this.password;
-  }
-
-  public getFullName() {
-    return this.fullName;
-  }
+  @Column({ name: 'full_name' })
+  public fullName: string;
 }
