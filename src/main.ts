@@ -6,7 +6,12 @@ import { configure, getLogger } from 'log4js';
 import { createConnection } from 'typeorm';
 
 import { config } from './config';
+import { UserController } from './controllers/user.controller';
 import { makeFastifyCallback } from './util/fastify.util';
+
+interface Controllers {
+  userController: UserController;
+}
 
 dotenvConfig();
 
@@ -28,7 +33,7 @@ createConnection()
   .then(() => {
     const app = fastify();
 
-    const { userController } = require('./controllers');
+    const { userController }: Controllers = require('./controllers');
 
     app.get('/users/:username', makeFastifyCallback(userController, 'getUser'));
 
